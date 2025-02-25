@@ -9,12 +9,8 @@
 #include "pico/bootrom.h"
 #include "hardware/pio.h"
 #include "hardware/clocks.h"
-
-// Arquivo .pio
 #include "animacoes_led.pio.h"
 
-// Pino de saída para a matriz de LEDs
-#define OUT_PIN 7
 
 const uint BOTAO_A = 5;
 const uint BOTAO_B = 6;
@@ -22,20 +18,21 @@ const uint LED_VERMELHO = 13;
 const uint LED_VERDE = 11;
 const uint JOYSTICK_X_PIN = 27;
 const uint JOYSTICK_Y_PIN = 26;  
-const uint JOYSTICK_PB = 22;
+
 #define I2C_PORT i2c1
 #define I2C_SDA 14
 #define I2C_SCL 15
 #define ENDERECO 0x3C
+#define OUT_PIN 7
+#define NUM_PIXELS 25 // Número de LEDs na matriz
+#define BUZZER_PIN 21  // Pino do buzzer 
 
+PIO pio;
+uint sm;
 static volatile uint32_t last_time = 0;
 bool Led_Estado = false;
 bool Estado_BUZZ = false;
 
-// Número de LEDs na matriz
-#define NUM_PIXELS 25
-
-#define BUZZER_PIN 21  // Pino do buzzer 
 
 /// Função para configurar e tocar o buzzer em uma frequência e duração específicas
 void buzzer_tocar(uint32_t frequencia, uint32_t duracao) {
@@ -59,10 +56,6 @@ void buzzer_tocar(uint32_t frequencia, uint32_t duracao) {
     pwm_set_enabled(slice_num, false);
 }
 
-
-// Variáveis Globais para PIO
-PIO pio;
-uint sm;
 
 // Vetores de imagens – valores de 0 a 1 (representam intensidade)
 double apagado[25] = {0.0, 0.0, 0.0, 0.0, 0.0,
@@ -95,12 +88,7 @@ double carinha_alegre[25] = {0.1, 0.1, 0.0, 0.1, 0.1,
                              0.1, 0.1, 0.1, 0.1, 0.1,
                              0.0, 0.1, 0.1, 0.1, 0.0};
 
-// Função para imprimir em binário (para depuração)
-void imprimir_binario(int num) {
-    for (int i = 31; i >= 0; i--) {
-        (num & (1 << i)) ? printf("1") : printf("0");
-    }
-}
+
 
 // Função que converte valores de 0 a 1 em uma cor RGB de 32 bits
 uint32_t matrix_rgb(double r, double g, double b) {
@@ -139,7 +127,7 @@ void desenho_pio(double *desenho, int cor) {
             pio_sm_put_blocking(pio, sm, valor_led);
         }
     }
-    imprimir_binario(valor_led);
+
 }
 
 // Função para tocar uma melodia
@@ -280,9 +268,6 @@ int main() {
     adc_gpio_init(JOYSTICK_X_PIN);
     adc_gpio_init(JOYSTICK_Y_PIN);
     
-    gpio_init(JOYSTICK_PB);
-    gpio_set_dir(JOYSTICK_PB, GPIO_IN);
-    gpio_pull_up(JOYSTICK_PB);
 
     // Configuração dos botões com pull-up
     gpio_init(BOTAO_A);
