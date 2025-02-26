@@ -210,6 +210,7 @@ void indicador_emocoes(ssd1306_t *ssd, uint16_t adc_x, uint16_t adc_y) {
         ssd1306_send_data(ssd);
         printf(" Sua criança está se sentindo Feliz!\n\n");
         tocar_melodia("feliz");
+        desenho_pio(apagado, 5);
     } else if (adc_y > 4000) {
         ssd1306_fill(ssd, false); // Limpa o display
         desenho_pio(carinha_triste, 4);
@@ -218,6 +219,7 @@ void indicador_emocoes(ssd1306_t *ssd, uint16_t adc_x, uint16_t adc_y) {
         ssd1306_send_data(ssd);
         printf(" Sua criança está se sentindo Triste!\n\n");
         tocar_melodia("triste");
+        desenho_pio(apagado, 5);
     } else if (adc_x > 4000) {
         ssd1306_fill(ssd, false); // Limpa o display
         desenho_pio(carinha_raiva, 1);
@@ -226,6 +228,7 @@ void indicador_emocoes(ssd1306_t *ssd, uint16_t adc_x, uint16_t adc_y) {
         ssd1306_send_data(ssd);
         printf(" Sua criança está se sentindo Brava!\n\n");
         tocar_melodia("bravo");
+        desenho_pio(apagado, 5);
     } else if (adc_y < 500) {
         ssd1306_fill(ssd, false); // Limpa o display
         desenho_pio(carinha_ansioso, 3);
@@ -234,6 +237,7 @@ void indicador_emocoes(ssd1306_t *ssd, uint16_t adc_x, uint16_t adc_y) {
         ssd1306_send_data(ssd);
         printf(" Sua criança está se sentindo Ansiosa!\n\n");
         tocar_melodia("ansioso");
+        desenho_pio(apagado, 5);
     }
 }
 
